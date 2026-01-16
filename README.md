@@ -18,7 +18,7 @@ Asenna flask-kirjasto:
 Luo tietokannan taulut ja lisää alkutiedot:
 
 <code>$ sqlite3 database.db < schema.sql</code>
-
+<br/>
 <code>$ sqlite3 database.db < init.sql</code>
 
 Voit käynnistää sovelluksen näin:
