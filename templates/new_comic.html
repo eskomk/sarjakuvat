@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <title>Luo uusi sarjis</title>
+    </head>
+    
+    {% for message in get_flashed_messages() %}
+    <p>
+        <b>{{ message }}</b>
+    </p>
+    {% endfor %}
+
+    <body>
+        <form action="/add_comic" method="POST">
+            Sarjiksen nimi: <br />
+            <input type="text" name="title" />
+            </p>
+            <p>
+            Sarjiksen kuvaus: <br />
+            <input type="text" name="description" />
+            </p>
+            <input type="submit" value="Luo sarjis" />
+        </form>
+    </body>
+</html>

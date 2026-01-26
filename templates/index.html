@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+    <title>Etusivu</title>
+    </head>
+
+    <body>
+        <div id="sarjalistaid">
+            {% for comic in comics %}
+                <p>
+                    <a href="/comic_juttu/{{ comic.id }}">{{ comic.title }}</a>
+                    <br />
+                    {{ comic.total }} sarjakuvaa
+                </p>
+                <hr />
+            {% endfor %}
+        </div>
+        <hr/>
+        <div id="kirjauduid">
+
+            {% for message in get_flashed_messages() %}
+            <p>
+                <b>{{ message }}</b>
+            </p>
+            {% endfor %}
+
+
+            {% if session.username %}
+            <p>
+                Olet kirjautunut nimellä {{ session.username }}
+            </p>
+            <p>
+                <a href="/add_comic">Lisää uusi sarjis</a>
+            </p>
+            <p>
+                <a href="/logout">Kirjaudu ulos</a>
+            </p>
+            {% else %}
+                <a href="/login">Kirjaudu sisään</a>
+            {% endif %}
+        </div>
+    </body>
+
+</html>

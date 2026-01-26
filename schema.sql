@@ -6,7 +6,7 @@ CREATE TABLE users (
 
 create TABLE comics (
   id integer primary key,
-  name TEXT unique,
+  title TEXT unique,
   description TEXT,
   user_id integer references users
 );
