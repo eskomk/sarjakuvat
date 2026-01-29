@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <title>Poista sarjis</title>
+    </head>
+    
+    {% for message in get_flashed_messages() %}
+    <p>
+        <b>{{ message }}</b>
+    </p>
+    {% endfor %}
+
+    <body>
+        <form action="/delete_comic/{{ comic.cid }}" method="POST">
+            Sarjiksen nimi: <br />
+            <label name="title">{{ comic.title }}</label>
+            </p>
+            <p>
+            Sarjiksen kuvaus: <br />
+            <label name="description">{{ comic.desc}}</label>
+            </p>
+            <input type="submit" value="Poista sarjis" />
+        </form>
+    </body>
+</html>

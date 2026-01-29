@@ -11,3 +11,11 @@ def check_login(username, password):
             return user_id
 
     return None
+
+def get_user(user_id):
+    sql = """SELECT u.id uid, u.username uname, c.id cid, c.title title, c.description desc
+             FROM users u
+             LEFT JOIN comics c ON u.id = c.user_id
+             WHERE u.id = ?"""
+    result = db.query(sql, [user_id])
+    return result if result else None

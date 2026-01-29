@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Käyttäjän tiedot</title>
+</head>
+
+<body>
+    <div>
+        Käyttäjä: {{ user[0].uname }}
+    </div>
+    <div>
+        Käyttäjän lisäämät sarjikset
+    </div>
+    <div>
+        {% for comic in user %}
+            <p>
+                <a href="/comic_juttu/{{ comic.cid }}">{{ comic.title }}</a>
+                <br />
+            </p>
+            <hr />
+        {% endfor %}
+
+    </div>
+
+  <hr />
+</body>
+
+</html>

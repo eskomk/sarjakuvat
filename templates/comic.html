@@ -9,10 +9,19 @@
     {{ comic.title }}
   </p>
   <p>
-    {{ comic.description }}
+    {{ comic.desc }}
   </p>
+  {% if user_id ==  comic.lisaaja_id %}
+    Voit muokata sarjista tai poistaa sen.
+    <div>
+        <a href="/edit_comic/{{ comic.cid }}">Muokkaa</a>
+    </div>
+    <div>
+        <a href="/delete_comic/{{ comic.cid }}">Poista</a>
+    </div>
+  {% endif %}
   <p>
-    Lisännyt <a href="/user/{{ user_id }}">{{ username }}</a>
+    Olet kirjautuneena <a href="/user/{{ user_id }}">{{ username }}</a>
   </p>
   <hr />
 </body>

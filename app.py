@@ -99,6 +99,51 @@ def create_comic():
         flash("Titteli luotu")
         return redirect("/")
 
+@app.route("/user/<int:user_id>")
+def show_user(user_id):
+    user = users.get_user(user_id)
 
+    return render_template("user.html", user = user)
 
+@app.route("/edit_comic/<int:comic_id>", methods=["GET", "POST"])
+def edit_comic(comic_id):
+    comic_a = forum.get_comic(comic_id)
+
+    if request.method == "GET":
+        return render_template("edit_comic.html", comic = comic_a)
+
+    if request.method == "POST":
+        title = request.form["title"]
+        descr = request.form["description"]
+        # user_id = session["user_id"]
+        sql = "UPDATE comics SET title = ?, description = ? WHERE id = ?"
+
+        try:
+            db.execute(sql, [title, descr, comic_id])
+        except sqlite3.IntegrityError:
+            flash("VIRHE: Titteli on jo varattu")
+            # return redirect("/add_comic")
+            return render_template("edit_comic.html")
+
+        flash(f"Sarjista '{title}' muokattu")
+        return redirect("/")
+
+@app.route("/delete_comic/<int:comic_id>", methods=["GET", "POST"])
+def delete_comic(comic_id):
+    comic_a = forum.get_comic(comic_id)
+
+    if request.method == "GET":
+        return render_template("delete_comic.html", comic = comic_a)
+
+    if request.method == "POST":
+        sql = "DELETE FROM comics WHERE id = ?"
+
+        try:
+            db.execute(sql, [comic_id])
+        except sqlite3.IntegrityError:
+            flash("VIRHE: Sarjista ei voitu poistaa")
+            return render_template("edit_comic.html")
+
+        flash(f"Sarjis \'{comic_a['title']}\' poistettu")
+        return redirect("/")
 

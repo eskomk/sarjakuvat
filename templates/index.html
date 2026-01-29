@@ -9,7 +9,7 @@
         <div id="sarjalistaid">
             {% for comic in comics %}
                 <p>
-                    <a href="/comic_juttu/{{ comic.id }}">{{ comic.title }}</a>
+                    <a href="/comic_juttu/{{ comic.cid }}">{{ comic.title }}</a>
                     <br />
                     {{ comic.total }} sarjakuvaa
                 </p>
@@ -39,6 +39,9 @@
             {% else %}
                 <a href="/login">Kirjaudu sisään</a>
             {% endif %}
+            <p>
+                <a href="/find">Etsi sarjiksia</a>
+            </p>
         </div>
     </body>
 
