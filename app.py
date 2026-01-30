@@ -147,3 +147,19 @@ def delete_comic(comic_id):
         flash(f"Sarjis \'{comic_a['title']}\' poistettu")
         return redirect("/")
 
+@app.route("/find_comics")
+def find():
+    sql = """SELECT id, title, description desc, user_id FROM comics
+        WHERE title LIKE ? OR description LIKE ?"""
+
+    query = request.args.get("query")
+
+    if query:
+        like = "%" + query + "%"
+        results = db.query(sql, [like, like])
+    else:
+        query = ""
+        results = []
+    return render_template("find_comics.html", query = query, results = results)
+
+ 
