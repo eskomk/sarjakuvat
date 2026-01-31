@@ -1,25 +1,18 @@
-<!DOCTYPE html>
-<html>
-    <head>
-    <title>Luo uusi sarjis</title>
-    </head>
-    
-    {% for message in get_flashed_messages() %}
-    <p>
-        <b>{{ message }}</b>
-    </p>
-    {% endfor %}
+{% extends "layout.html" %}
 
-    <body>
-        <form action="/add_comic" method="POST">
-            Sarjiksen nimi: <br />
-            <input type="text" name="title" />
-            </p>
-            <p>
-            Sarjiksen kuvaus: <br />
-            <input type="text" name="description" />
-            </p>
-            <input type="submit" value="Luo sarjis" />
-        </form>
-    </body>
-</html>
+{% block title %}Sarjakuvat{% endblock %}
+
+{% block content %}
+<h2>Luo uusi sarjis</h2>
+<form action="/add_comic" method="POST">
+    Sarjiksen nimi: <br />
+    <input type="text" name="title" />
+    </p>
+    <p>
+    Sarjiksen kuvaus: <br />
+    <textarea name="description" cols="50" rows="20"></textarea>
+    </p>
+    <input type="submit" value="Luo sarjis" />
+</form>
+
+{% endblock %}

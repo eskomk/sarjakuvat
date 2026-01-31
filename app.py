@@ -2,6 +2,7 @@ import sqlite3
 from flask import Flask
 from flask import redirect, render_template, request, flash
 from flask import session
+from flask import abort
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
 import db
@@ -67,7 +68,7 @@ def logout():
     del session["username"]
     return redirect("/")
 
-@app.route("/comic_juttu/<int:comic_id>")
+@app.route("/comic_issue/<int:comic_id>")
 def show_comic(comic_id):
     comic_a = forum.get_comic(comic_id)
 
@@ -109,6 +110,9 @@ def show_user(user_id):
 def edit_comic(comic_id):
     comic_a = forum.get_comic(comic_id)
 
+    if session["user_id"] != comic_a["adder_id"]:
+        abort(403)
+
     if request.method == "GET":
         return render_template("edit_comic.html", comic = comic_a)
 
@@ -131,6 +135,9 @@ def edit_comic(comic_id):
 @app.route("/delete_comic/<int:comic_id>", methods=["GET", "POST"])
 def delete_comic(comic_id):
     comic_a = forum.get_comic(comic_id)
+
+    if session["user_id"] != comic_a["adder_id"]:
+        abort(403)
 
     if request.method == "GET":
         return render_template("delete_comic.html", comic = comic_a)

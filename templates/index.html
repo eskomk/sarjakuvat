@@ -1,47 +1,18 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
 
-    <head>
-    <title>Etusivu</title>
-    </head>
+{% block title %}Sarjakuvat{% endblock %}
 
-    <body>
-        <div id="sarjalistaid">
-            {% for comic in comics %}
-                <p>
-                    <a href="/comic_juttu/{{ comic.cid }}">{{ comic.title }}</a>
-                    <br />
-                </p>
-                <hr />
-            {% endfor %}
-        </div>
-        <hr/>
-        <div id="kirjauduid">
+{% block content %}
+<h2>Lisätyt sarjikset</h2>
 
-            {% for message in get_flashed_messages() %}
-            <p>
-                <b>{{ message }}</b>
-            </p>
-            {% endfor %}
+<div id="sarjalistaid">
+    <ul>
+    {% for comic in comics %}
+        <li>
+            <a href="/comic_issue/{{ comic.cid }}">{{ comic.title }}</a>
+        </li>
+    {% endfor %}
+    </ul>
+</div>
 
-
-            {% if session.username %}
-            <p>
-                Olet kirjautunut nimellä {{ session.username }}
-            </p>
-            <p>
-                <a href="/add_comic">Lisää uusi sarjis</a>
-            </p>
-            <p>
-                <a href="/logout">Kirjaudu ulos</a>
-            </p>
-            {% else %}
-                <a href="/login">Kirjaudu sisään</a>
-            {% endif %}
-            <p>
-                <a href="/find_comics">Etsi sarjiksia</a>
-            </p>
-        </div>
-    </body>
-
-</html>
+{% endblock %}

@@ -1,25 +1,19 @@
-<!DOCTYPE html>
-<html>
-    <head>
-    <title>Muokkaa sarjista</title>
-    </head>
-    
-    {% for message in get_flashed_messages() %}
-    <p>
-        <b>{{ message }}</b>
-    </p>
-    {% endfor %}
+{% extends "layout.html" %}
 
-    <body>
-        <form action="/edit_comic/{{ comic.cid }}" method="POST">
-            Sarjiksen nimi: <br />
-            <input type="text" name="title" value="{{ comic.title }}"/>
-            </p>
-            <p>
-            Sarjiksen kuvaus: <br />
-            <input type="text" name="description" value="{{ comic.desc}}"/>
-            </p>
-            <input type="submit" value="Talleta muutokset" />
-        </form>
-    </body>
-</html>
+{% block title %}Sarjakuvat{% endblock %}
+
+{% block content %}
+<h2>Muokkaa sarjista</h2>
+
+<form action="/edit_comic/{{ comic.cid }}" method="POST">
+    Sarjiksen nimi: <br />
+    <input type="text" name="title" value="{{ comic.title }}"/>
+    </p>
+    <p>
+    Sarjiksen kuvaus: <br />
+    <textarea name="description" cols="50" rows="20">{{ comic.desc}}</textarea>
+    </p>
+    <input type="submit" value="Talleta muutokset" />
+</form>
+
+{% endblock %}

@@ -1,16 +1,9 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
 
-<head>
-<title>Etusivu</title>
-</head>
+{% block title %}Sarjakuvat{% endblock %}
 
-<body>
-    {% for message in get_flashed_messages() %}
-    <p>
-        <b>{{ message }}</b>
-    </p>
-    {% endfor %}
+{% block content %}
+<h2>Kirjaudu</h2>
 
     <form action="/login" method="post">
         <p>
@@ -23,7 +16,5 @@
         </p>
         <input type="submit" value="Kirjaudu" />
     </form>
-    <hr/>
-    Et ole rekisteröitynyt ? <a href="/register">Luo tunnus</a>
-</body>
-</html>
+
+{% endblock %}

@@ -1,36 +1,33 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
 
-<head>
-  <title>Käyttäjän tiedot</title>
-</head>
+{% block title %}Sarjakuvat{% endblock %}
 
-<body>
-    <div>
-        Käyttäjä: {{ user[0].uname }}
-    </div>
-    <div>
-        {% if user[0].cid %}
-            <div>
-                Käyttäjän lisäämät sarjikset
-            </div>
+{% block content %}
+<h2>Käyttäjän tiedot</h2>
 
-            {% for comic in user %}
-                <p>
-                    <a href="/comic_juttu/{{ comic.cid }}">{{ comic.title }}</a>
-                    <br />
-                </p>
-                <hr />
-            {% endfor %}
-        {% else %}
-            <div>
-                Käyttäjällä ei ole lisättyjä sarjiksia
-            </div>
-        {% endif %}
+<div>
+    Käyttäjä: {{ user[0].uname }}
+</div>
+<div>
+    {% if user[0].cid %}
+        <div>
+            Käyttäjän lisäämät sarjikset
+        </div>
 
-    </div>
+        {% for comic in user %}
+            <ul>
+                <li>
+                    <a href="/comic_issue/{{ comic.cid }}">{{ comic.title }}</a>
+                </li>
+            </ul>
+        {% endfor %}
+    {% else %}
+        <div>
+            Käyttäjällä ei ole lisättyjä sarjiksia
+        </div>
+    {% endif %}
 
-  <hr />
-</body>
+</div>
 
-</html>
+{% endblock %}
+

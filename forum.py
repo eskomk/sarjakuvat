@@ -9,5 +9,9 @@ def get_comics():
     return db.query(sql)
 
 def get_comic(id: int):
-    sql = "select c.id cid, c.title title, c.description desc, c.user_id as lisaaja_id from comics c where c.id = ?"
+    sql = """SELECT c.id cid, c.title title, c.description desc, c.user_id adder_id,
+        u.username adder
+        FROM comics c
+        LEFT JOIN users u ON c.user_id = u.id
+        WHERE c.id = ?"""
     return db.query(sql, [id])[0]

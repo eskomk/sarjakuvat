@@ -1,29 +1,22 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
 
-<head>
-  <title>Sarjiksen tiedot</title>
-</head>
+{% block title %}Sarjakuvat{% endblock %}
 
-<body>
+{% block content %}
+
+<h2>Sarjiksen tiedot</h2>
     {{ comic.title }}
-  </p>
-  <p>
+     <hr/>
     {{ comic.desc }}
-  </p>
-  {% if user_id ==  comic.lisaaja_id %}
-    Voit muokata sarjista tai poistaa sen.
-    <div>
-        <a href="/edit_comic/{{ comic.cid }}">Muokkaa</a>
-    </div>
-    <div>
-        <a href="/delete_comic/{{ comic.cid }}">Poista</a>
-    </div>
-  {% endif %}
-  <p>
-    Olet kirjautuneena <a href="/user/{{ user_id }}">{{ username }}</a>
-  </p>
-  <hr />
-</body>
+    <hr/>
+    {% if user_id ==  comic.adder_id %}
+        Voit muokata sarjista tai poistaa sen.
+        <div>
+            <a href="/edit_comic/{{ comic.cid }}">Muokkaa</a>
+        </div>
+        <div>
+            <a href="/delete_comic/{{ comic.cid }}">Poista</a>
+        </div>
+    {% endif %}
 
-</html>
+{% endblock %}

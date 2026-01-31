@@ -1,31 +1,24 @@
-<!DOCTYPE html>
-<html>
-    <head>
-    <title>Etsi sarjiksia</title>
-    </head>
-    
-    {% for message in get_flashed_messages() %}
-    <p>
-        <b>{{ message }}</b>
+{% extends "layout.html" %}
+
+{% block title %}Sarjakuvat{% endblock %}
+
+{% block content %}
+<h2>Etsi sarjiksia</h2>
+<form action="/find_comics" method="GET">
+    Hakusana: <br />
+    <input type="text" name="query" id="query" value="{{ query }}" />
     </p>
-    {% endfor %}
+    <input type="submit" value="Etsi sarjiksia" />
+</form>
 
-    <body>
-        <form action="/find_comics" method="GET">
-            Hakusana: <br />
-            <input type="text" name="query" id="query" value="{{ query }}" />
-            </p>
-            <input type="submit" value="Etsi sarjiksia" />
-        </form>
+{% if query %}
+    <h3>Tulokset</h3>
 
-        {% if query %}
-            <h3>Tulokset</h3>
+    <ul>
+        {% for comic in results %}
+            <li><a href="/comic_issue/{{ comic.id }}">{{ comic.title }}</a></li>
+        {% endfor %}
+    </ul>
+{% endif %}
 
-            <ul>
-                {% for comic in results %}
-                    <li><a href="/comic_juttu/{{ comic.id }}">{{ comic.title }}</a></li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    </body>
-</html>
+{% endblock %}
