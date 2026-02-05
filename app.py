@@ -95,27 +95,30 @@ def show_comic(comic_id):
     except KeyError:
         flash("VIRHE: Et ole kirjautunut sisään")
         return redirect("/login")
-    return render_template("comic.html", comic=comic_a, starrings = stars_per_comic_a, username=username, user_id = session["user_id"])
+    return render_template("comic.html", comic=comic_a, starrings=stars_per_comic_a, username=username, user_id=session["user_id"])
 
 @app.route("/add_comic", methods=["GET", "POST"])
 def create_comic():
+    comic_types_a = forum.get_all_comic_types()
+
     if request.method == "GET":
-        return render_template("new_comic.html")
+        return render_template("new_comic.html", c_types=comic_types_a)
 
     if request.method == "POST":
         title = request.form["title"]
         descr = request.form["description"]
+        comic_type = request.form["type_value"]
         user_id = session["user_id"]
-        sql = "INSERT INTO comics (title, description, user_id) VALUES (?, ?, ?)"
+        sql = "INSERT INTO comics (title, description, user_id, type_id) VALUES (?, ?, ?, ?)"
 
         try:
-            db.execute(sql, [title, descr, user_id])
+            db.execute(sql, [title, descr, user_id, comic_type])
         except sqlite3.IntegrityError:
             flash("VIRHE: Titteli on jo varattu")
             # return redirect("/add_comic")
-            return render_template("new_comic.html")
+            return render_template("new_comic.html", c_types=comic_types_a)
 
-        flash("Titteli luotu")
+        flash(f"Sarjis '{title}' luotu")
         return redirect("/")
 
 @app.route("/user/<int:user_id>")
@@ -127,25 +130,27 @@ def show_user(user_id):
 @app.route("/edit_comic/<int:comic_id>", methods=["GET", "POST"])
 def edit_comic(comic_id):
     comic_a = forum.get_comic(comic_id)
+    comic_types_a = forum.get_all_comic_types()
 
     if session["user_id"] != comic_a["adder_id"]:
         abort(403)
 
     if request.method == "GET":
-        return render_template("edit_comic.html", comic = comic_a)
+        return render_template("edit_comic.html", comic=comic_a, c_types=comic_types_a)
 
     if request.method == "POST":
         title = request.form["title"]
         descr = request.form["description"]
+        comic_type = request.form["type_value"]
         # user_id = session["user_id"]
-        sql = "UPDATE comics SET title = ?, description = ? WHERE id = ?"
+        sql = "UPDATE comics SET title = ?, description = ?, type_id = ? WHERE id = ?"
 
         try:
-            db.execute(sql, [title, descr, comic_id])
+            db.execute(sql, [title, descr, comic_type, comic_id])
         except sqlite3.IntegrityError:
             flash("VIRHE: Titteli on jo varattu")
             # return redirect("/add_comic")
-            return render_template("edit_comic.html")
+            return render_template("edit_comic.html", comic, c_types=comic_types_a)
 
         flash(f"Sarjista '{title}' muokattu")
         return redirect("/")
@@ -222,6 +227,4 @@ def star_comic(comic_id: int):
             return redirect("/")
 
         flash(f"Arvostelu {str_db_oper}. Sarjis: \"{comic_a['title']}\"")
-        # return render_template("comic.html", comic=comic_a, username=session["username"], user_id = user_id)
         return redirect(f"/comic_issue/{comic_id}")
-

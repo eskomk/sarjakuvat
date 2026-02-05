@@ -13,6 +13,15 @@
     Sarjiksen kuvaus: <br />
     <textarea name="description" cols="50" rows="20" maxlength="500"></textarea>
     </p>
+    <p>
+        <label>Sarjiksen ilmiasu:
+            <select name="type_value" required>
+                {% for c_item in c_types %}
+                <option value="{{ c_item.id }}">{{ c_item.comic_type }}</option>
+                {% endfor %}
+            </select>
+        </label>
+    </p>
     <input type="submit" value="Luo sarjis" />
 </form>
 

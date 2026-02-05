@@ -11,6 +11,7 @@ create TABLE comics (
   title TEXT unique,
   description TEXT,
   user_id integer,
+  type_id integer references comic_types,
   foreign key (user_id) references users(id) on delete cascade
 );
 
@@ -23,9 +24,7 @@ create table comic_images (
 
 create table comic_types (
   id integer primary key,
-  type TEXT unique,
-  description text,
-  comic_id integer references comics
+  comic_type TEXT unique
 );
 
 create table comic_stars (
