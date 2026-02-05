@@ -9,7 +9,7 @@
      <hr/>
     {{ comic.desc }}
     <hr/>
-    {% if user_id ==  comic.adder_id %}
+    {% if user_id == comic.adder_id %}
         Voit muokata sarjista tai poistaa sen.
         <div>
             <a href="/edit_comic/{{ comic.cid }}">Muokkaa</a>
@@ -17,6 +17,21 @@
         <div>
             <a href="/delete_comic/{{ comic.cid }}">Poista</a>
         </div>
+    {% else %}
+        Voit arvostella sarjiksen.
+        <div>
+            <a href="/star_comic/{{ comic.cid }}">Arvostele</a>
+        </div>
     {% endif %}
+    <hr/>
+    Arvostelut
+    <div>
+        {% for star_item in starrings %}
+        <div>
+            {{ star_item.stars }} / {{ star_item.s_desc }}
+        </div>
+        {% endfor %}
+    </div>
+
 
 {% endblock %}

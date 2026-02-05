@@ -1,11 +1,15 @@
 import db
 
+def foreign_keys():
+    sql = "PRAGMA foreign_keys = ON"
+    db.query(sql)
+
 def get_comics():
     sql = """SELECT c.id cid, c.title title, u.id uid, u.username username
-             FROM comics c
-             LEFT JOIN users u ON c.user_id = u.id
-             GROUP BY c.id
-             ORDER BY c.title ASC"""
+        FROM comics c
+        LEFT JOIN users u ON c.user_id = u.id
+        GROUP BY c.id
+        ORDER BY c.title ASC"""
     return db.query(sql)
 
 def get_comic(id: int):
@@ -15,3 +19,25 @@ def get_comic(id: int):
         LEFT JOIN users u ON c.user_id = u.id
         WHERE c.id = ?"""
     return db.query(sql, [id])[0]
+
+def get_comic_star_for_user(user_id: int, comic_id: int):
+    sql = """SELECT s.user_id user_id, s.comic_id comic_id,
+        s.stars stars, s.description desc
+        FROM comic_stars s
+        WHERE s.user_id = ? AND s.comic_id = ?"""
+    try:
+        return db.query(sql, [user_id, comic_id])[0]
+    except IndexError:
+        return None
+
+def get_stars_per_comic(comic_id: int):
+    sql = """SELECT s.user_id user_id, s.comic_id comic_id,
+        s.stars stars, s.description s_desc,
+        c.title title, c.description c_desc
+        FROM comics c
+        JOIN comic_stars s ON c.id = s.comic_id
+        WHERE s.comic_id = ?"""
+    try:
+        return db.query(sql, [comic_id])
+    except IndexError:
+        return None

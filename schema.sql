@@ -1,3 +1,5 @@
+-- select PRAGMA foreign_keys = ON;
+
 CREATE TABLE users (
     id INTEGER PRIMARY KEY,
     username TEXT UNIQUE,
@@ -8,7 +10,8 @@ create TABLE comics (
   id integer primary key,
   title TEXT unique,
   description TEXT,
-  user_id integer references users
+  user_id integer,
+  foreign key (user_id) references users(id) on delete cascade
 );
 
 create table comic_images (
@@ -26,11 +29,14 @@ create table comic_types (
 );
 
 create table comic_stars (
-  id integer primary key,
-  stars integer,
+  -- id integer autoincrement,
+  stars integer CHECK(stars >= 1 AND stars <= 5),
   description text,
-  user_id integer references users,
-  comic_id integer references comics
+  user_id integer,
+  comic_id integer,
+  primary key (user_id, comic_id),
+  foreign key (user_id) references users ON DELETE CASCADE,
+  foreign key (comic_id) references comics ON DELETE CASCADE
 );
 
 -- Ref: comics.user_id > users.id

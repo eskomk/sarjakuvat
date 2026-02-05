@@ -7,12 +7,28 @@ from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
 import db
 import forum, users, config
+import secrets
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
 
+@app.context_processor
+def inject_csrf_token():
+    if "csrf_token" not in session:
+        session["csrf_token"] = secrets.token_hex(16)
+    return dict(csrf_token=session["csrf_token"])
+
+@app.before_request
+def csrf_protect():
+    if request.method == "POST" and request.endpoint not in ("login",):
+        session_token = session.get("csrf_token")
+        form_token = request.form.get("csrf_token")
+        if not session_token or session_token != form_token:
+            abort(403)
+
 @app.route("/")
 def index():
+    forum.foreign_keys()
     comics = forum.get_comics()
     return render_template("index.html", comics = comics)
 
@@ -26,7 +42,8 @@ def create():
     password1 = request.form["password1"]
     password2 = request.form["password2"]
     if password1 != password2:
-        return "VIRHE: salasanat eivät ole samat"
+        flash("VIRHE: salasanat eivät ole samat")
+        return redirect("/")
     password_hash = generate_password_hash(password1)
 
     try:
@@ -71,13 +88,14 @@ def logout():
 @app.route("/comic_issue/<int:comic_id>")
 def show_comic(comic_id):
     comic_a = forum.get_comic(comic_id)
+    stars_per_comic_a = forum.get_stars_per_comic(comic_id)
 
     try:
         username = session["username"]
     except KeyError:
         flash("VIRHE: Et ole kirjautunut sisään")
         return redirect("/login")
-    return render_template("comic.html", comic=comic_a, username=username, user_id = session["user_id"])
+    return render_template("comic.html", comic=comic_a, starrings = stars_per_comic_a, username=username, user_id = session["user_id"])
 
 @app.route("/add_comic", methods=["GET", "POST"])
 def create_comic():
@@ -169,4 +187,41 @@ def find():
         results = []
     return render_template("find_comics.html", query = query, results = results)
 
- 
+@app.route("/star_comic/<int:comic_id>", methods=["GET", "POST"])
+def star_comic(comic_id: int):
+    comic_a = forum.get_comic(comic_id)
+
+    if session["user_id"] == comic_a["adder_id"]:
+        # abort(403)
+        flash("VIRHE! Et voi arvostella omaa sarjistasi")
+        return redirect("/")
+
+    user_id = session["user_id"]
+    stars_a = forum.get_comic_star_for_user(user_id, comic_id)
+
+    if request.method == "GET":
+        return render_template("star_comic.html", comic = comic_a, starring = stars_a)
+
+    if request.method == "POST":
+        stars = request.form["star_value"]
+        descr = request.form["description"]
+        # user_id = session["user_id"]
+
+        sql = "INSERT INTO comic_stars (stars, description, user_id, comic_id) VALUES (?, ?, ?, ?)"
+        str_db_oper = "luotu"
+
+        if stars_a:
+            sql = """UPDATE comic_stars SET stars  = ?, description = ?
+                WHERE user_id = ? AND comic_id = ?"""
+            str_db_oper = "päivitetty"
+
+        try:
+            db.execute(sql, [stars, descr, user_id, comic_id])
+        except sqlite3.IntegrityError:
+            flash("VIRHE: Arvostelu ei onnannu, tietokantavirhe")
+            return redirect("/")
+
+        flash(f"Arvostelu {str_db_oper}. Sarjis: \"{comic_a['title']}\"")
+        # return render_template("comic.html", comic=comic_a, username=session["username"], user_id = user_id)
+        return redirect(f"/comic_issue/{comic_id}")
+
