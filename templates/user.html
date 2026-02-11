@@ -13,14 +13,13 @@
         <div>
             Käyttäjän lisäämät sarjikset
         </div>
-
+        <ul>
         {% for comic in user %}
-            <ul>
-                <li>
-                    <a href="/comic_issue/{{ comic.cid }}">{{ comic.title }}</a>
-                </li>
-            </ul>
+            <li>
+                <a href="/comic_issue/{{ comic.cid }}">{{ comic.title }}</a>
+            </li>
         {% endfor %}
+        </ul>
     {% else %}
         <div>
             Käyttäjällä ei ole lisättyjä sarjiksia

@@ -28,6 +28,9 @@
     <hr/>
     Arvostelut
     <div>
+        Keskiarvo: {{ mean_stars.s_mean }}
+    </div>
+    <div>
         {% for star_item in starrings %}
         <div>
             {{ star_item.stars }} / {{ star_item.s_desc }}

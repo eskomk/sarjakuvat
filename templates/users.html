@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+
+{% block title %}Sarjakuvat{% endblock %}
+
+{% block content %}
+<h2>Käyttäjälista</h2>
+
+<div>
+    {% for u_user in userlist %}
+        <div>
+            Käyttäjä: {{ u_user.uname }}
+        </div>
+        <ul>
+        {% for comic in comics_plain %}
+            {% if u_user.uid == comic.adder_id %}
+            <li>
+                <a href="/comic_issue/{{ comic.cid }}">{{ comic.title }}</a>
+            </li>
+            {% endif %}
+        {% endfor %}
+        </ul>
+    {% endfor %}
+</div>
+
+
+{% endblock %}

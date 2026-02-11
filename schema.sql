@@ -1,5 +1,3 @@
--- select PRAGMA foreign_keys = ON;
-
 CREATE TABLE users (
     id INTEGER PRIMARY KEY,
     username TEXT UNIQUE,

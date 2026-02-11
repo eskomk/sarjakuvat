@@ -89,13 +89,15 @@ def logout():
 def show_comic(comic_id):
     comic_a = forum.get_comic(comic_id)
     stars_per_comic_a = forum.get_stars_per_comic(comic_id)
+    mean_stars_a = forum.get_mean_stars_for_comic(comic_id)
 
     try:
         username = session["username"]
     except KeyError:
         flash("VIRHE: Et ole kirjautunut sisään")
         return redirect("/login")
-    return render_template("comic.html", comic=comic_a, starrings=stars_per_comic_a, username=username, user_id=session["user_id"])
+    return render_template("comic.html", comic=comic_a, starrings=stars_per_comic_a, \
+        username=username, user_id=session["user_id"], mean_stars = mean_stars_a)
 
 @app.route("/add_comic", methods=["GET", "POST"])
 def create_comic():
@@ -126,6 +128,12 @@ def show_user(user_id):
     user = users.get_user(user_id)
 
     return render_template("user.html", user = user)
+
+@app.route("/userlist")
+def list_users():
+    userlist = users.get_users2()
+    comics_plain_a = forum.get_plain_comics()
+    return render_template("users.html", userlist = userlist, comics_plain = comics_plain_a)
 
 @app.route("/edit_comic/<int:comic_id>", methods=["GET", "POST"])
 def edit_comic(comic_id):

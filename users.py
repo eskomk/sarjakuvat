@@ -19,3 +19,16 @@ def get_user(user_id):
              WHERE u.id = ?"""
     result = db.query(sql, [user_id])
     return result if result else None
+
+def get_users():
+    sql = """SELECT u.id uid, u.username uname, c.id cid, c.title titteli, c.description desc
+             FROM users u
+             LEFT JOIN comics c ON u.id = c.user_id"""
+    result = db.query(sql)
+    return result if result else None
+
+def get_users2():
+    sql = "SELECT u.id uid, u.username uname FROM users u"
+    result = db.query(sql)
+    return result if result else None
+
