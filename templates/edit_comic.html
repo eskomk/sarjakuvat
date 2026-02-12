@@ -7,12 +7,12 @@
 
 <form action="/edit_comic/{{ comic.cid }}" method="POST">
     Sarjiksen nimi: <br />
-    <input type="text" name="title" maxlength="100" value="{{ comic.title }}"/>
-    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <input type="text" name="title" maxlength="100" value="{{ comic.title }}" required />
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
     </p>
     <p>
     Sarjiksen kuvaus: <br />
-    <textarea name="description" cols="50" rows="20" maxlength="500">{{ comic.desc}}</textarea>
+    <textarea name="description" cols="50" rows="20" maxlength="500" required >{{ comic.desc}}</textarea>
     </p>
 
     <p>

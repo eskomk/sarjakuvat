@@ -40,6 +40,12 @@ def register():
 def create():
     username = request.form["username"]
     password1 = request.form["password1"]
+
+    if (not username or len(username) > 12) \
+        or (not password1 or len(password1) > 12):
+        flash("VIRHE: tunnus tai salasana epäkelvot (esim. > 12 merkkiä)")
+        return redirect("/")
+
     password2 = request.form["password2"]
     if password1 != password2:
         flash("VIRHE: salasanat eivät ole samat")
@@ -110,6 +116,12 @@ def create_comic():
         title = request.form["title"]
         descr = request.form["description"]
         comic_type = request.form["type_value"]
+
+        if (not title or len(title) > 100) or (not descr or len(descr) > 500) \
+            or (not comic_type):
+            flash("VIRHE: Epätäydelliset tiedot")
+            return render_template("new_comic.html", c_types=comic_types_a)
+
         user_id = session["user_id"]
         sql = "INSERT INTO comics (title, description, user_id, type_id) VALUES (?, ?, ?, ?)"
 
@@ -150,15 +162,21 @@ def edit_comic(comic_id):
         title = request.form["title"]
         descr = request.form["description"]
         comic_type = request.form["type_value"]
+
+        if (not title or len(title) > 100) or (not descr or len(descr) > 500) \
+            or (not comic_type):
+            flash("VIRHE: Epätäydelliset tiedot")
+            return render_template("edit_comic.html", comic=comic_a, c_types=comic_types_a)
+
         # user_id = session["user_id"]
         sql = "UPDATE comics SET title = ?, description = ?, type_id = ? WHERE id = ?"
 
         try:
             db.execute(sql, [title, descr, comic_type, comic_id])
         except sqlite3.IntegrityError:
-            flash("VIRHE: Titteli on jo varattu")
+            flash("VIRHE: Titteli on jo varattu tai muu virhe")
             # return redirect("/add_comic")
-            return render_template("edit_comic.html", comic, c_types=comic_types_a)
+            return render_template("edit_comic.html", comic=comic_a, c_types=comic_types_a)
 
         flash(f"Sarjista '{title}' muokattu")
         return redirect("/")
@@ -217,7 +235,13 @@ def star_comic(comic_id: int):
 
     if request.method == "POST":
         stars = request.form["star_value"]
+        if not stars or int(stars) < 1 or int(stars) > 5:
+            flash("VIRHE: tähdet pielessä")
+            return render_template("star_comic.html", comic = comic_a, starring = stars_a)
         descr = request.form["description"]
+        if len(descr) > 500:
+            flash("VIRHE: liian pitkä kuvaus")
+            return render_template("star_comic.html", comic = comic_a, starring = stars_a)
         # user_id = session["user_id"]
 
         sql = "INSERT INTO comic_stars (stars, description, user_id, comic_id) VALUES (?, ?, ?, ?)"
