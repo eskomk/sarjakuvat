@@ -10,14 +10,14 @@
 
 ## Huomaa
 - seed.py
- - Tiedosto ajamalla samassa hakmeistossa terminaalissa (komennolla <code>$ python3 seed.py</code>) lisää satunnaisesti tuotettua dataa tietokannan tauluihin.
- - Ajo kestää ainakin minulla yli tunnin tiedoston muuttujien oletuksilla. Säädä muuttujat mieleiseksisi.
- - Ei liity muuten sovelluksen toimintaan.
+  - Tiedosto ajamalla samassa hakemistossa terminaalissa (komennolla <code>$ python3 seed.py</code>) lisää satunnaisesti tuotettua dataa tietokannan tauluihin.
+  - Ajo kestää ainakin minulla yli tunnin tiedoston muuttujien oletuksilla. Säädä muuttujat mieleiseksisi.
+  - Ei liity muuten sovelluksen toimintaan.
 
 ## TODO
 - TODO: Käyttäjä pystyy lisäämään kuvia kuvaukseen sarjakuvasta.
 - TODO: Sovelluksessa on käyttäjäsivut, jotka näyttävät tilastoja ja käyttäjän lisäämät sarjakuvat.
- - Tämä osittain olemassa.
+  - Tämä osittain olemassa.
 - TODO: Etsintätoiminnon tulosten sivutus.
 - TODO: Järkevämpi toiminto users.html -sivulla käyttäjän lisäämien sarjakuvien läpikäyntiin. Liittyy routeen userlist_paged.
 - TODO: Tyylitiedostojen käyttö, kunhan olen päättänyt pitääkö sovelluksen ulkonäköä miten viilata.
