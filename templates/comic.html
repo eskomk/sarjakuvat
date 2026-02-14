@@ -5,6 +5,8 @@
 {% block content %}
 
 <h2>Sarjiksen tiedot</h2>
+    Lisääjä: <a href="/user/{{ comic.adder_id }}">{{ comic.adder }}</a>
+    <hr/>
     {{ comic.title }}
      <hr/>
     {{ comic.desc }}
