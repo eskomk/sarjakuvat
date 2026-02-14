@@ -8,6 +8,7 @@ from werkzeug.security import check_password_hash
 import db
 import forum, users, config
 import secrets
+import math
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
@@ -27,10 +28,22 @@ def csrf_protect():
             abort(403)
 
 @app.route("/")
-def index():
+@app.route("/<int:page>")
+def index(page=1):
     forum.foreign_keys()
-    comics = forum.get_comics()
-    return render_template("index.html", comics = comics)
+
+    page_size = 10
+    comic_count = forum.get_comic_count()
+    page_count = math.ceil(comic_count[0] / page_size)
+    page_count = max(page_count, 1)
+
+    if page < 1:
+        return redirect("/1")
+    if page > page_count:
+        return redirect("/" + str(page_count))
+
+    comics = forum.get_comics_paged(page, page_size)
+    return render_template("index.html", page=page, page_count=page_count, comics=comics)
 
 @app.route("/register")
 def register():
@@ -92,18 +105,38 @@ def logout():
     return redirect("/")
 
 @app.route("/comic_issue/<int:comic_id>")
-def show_comic(comic_id):
-    comic_a = forum.get_comic(comic_id)
-    stars_per_comic_a = forum.get_stars_per_comic(comic_id)
-    mean_stars_a = forum.get_mean_stars_for_comic(comic_id)
+@app.route("/comic_issue/<int:comic_id>/<int:page>")
+def show_comic(comic_id, page=1):
+    username = ""
 
     try:
         username = session["username"]
     except KeyError:
         flash("VIRHE: Et ole kirjautunut sisään")
         return redirect("/login")
+
+    comic_a = forum.get_comic(comic_id)
+    # stars_per_comic_a = forum.get_stars_per_comic_paged(comic_id)
+    mean_stars_a = forum.get_mean_stars_for_comic(comic_id)
+
+    page_size = 10
+    comic_star_count = forum.get_comic_star_count(comic_id)
+    page_count = math.ceil(comic_star_count / page_size)
+    page_count = max(page_count, 1)
+
+    stars_per_comic_a = forum.get_stars_per_comic_paged(comic_id, page, page_size)
+
+    if page < 1:
+        # return redirect("/1")
+        return redirect(f"/comic_issue/{comic_id}/1")
+
+    if page > page_count:
+        # return redirect("/" + str(page_count))
+        return redirect(f"/comic_issue/{comic_id}/{str(page_count)}")
+
     return render_template("comic.html", comic=comic_a, starrings=stars_per_comic_a, \
-        username=username, user_id=session["user_id"], mean_stars = mean_stars_a)
+        username=username, user_id=session["user_id"], mean_stars = mean_stars_a, \
+        page=page, page_count=page_count)
 
 @app.route("/add_comic", methods=["GET", "POST"])
 def create_comic():
@@ -146,6 +179,19 @@ def list_users():
     userlist = users.get_users2()
     comics_plain_a = forum.get_plain_comics()
     return render_template("users.html", userlist = userlist, comics_plain = comics_plain_a)
+
+@app.route("/userlist_paged")
+@app.route("/userlist_paged/<int:page>")
+def list_users_paged(page=1):
+
+    page_size = 1
+    limit = page_size
+    offset = page_size * (page - 1)
+
+    userlist = users.get_users2_paged(limit, offset)
+    comics_plain_a = forum.get_plain_comics()
+    return render_template("users.html", userlist = userlist, comics_plain = comics_plain_a, page=page)
+
 
 @app.route("/edit_comic/<int:comic_id>", methods=["GET", "POST"])
 def edit_comic(comic_id):

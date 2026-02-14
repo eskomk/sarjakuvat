@@ -32,3 +32,8 @@ def get_users2():
     result = db.query(sql)
     return result if result else None
 
+def get_users2_paged(limit, offset):
+    sql = "SELECT u.id uid, u.username uname FROM users u ORDER BY uname LIMIT ? OFFSET ?"
+
+    result = db.query(sql, [limit, offset])
+    return result if result else None
