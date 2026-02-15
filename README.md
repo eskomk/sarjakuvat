@@ -6,11 +6,12 @@
 - Käyttäjä näkee sovellukseen lisätyt sarjakuvien kuvaukset.
 - Käyttäjä pystyy etsimään sarjakuvien kuvauksia hakusanalla.
 - Käyttäjä pystyy valitsemaan sarjakuvan kuvaukseen "sarjakuvan tyyppi" -luokittelun.
+- Käyttäjä näkee mitä sarjakuvia kukin käyttäjä on lisännyt.
 - Sarjakuvaa arvosteleva käyttäjä pystyy antamaan sarjakuvalle tähtimäärän ja sanallisen arvostelun.
 
 ## Huomaa
 - seed.py
-  - Tiedosto ajamalla samassa hakemistossa terminaalissa (komennolla <code>$ python3 seed.py</code>) lisää satunnaisesti tuotettua dataa tietokannan tauluihin.
+  - Tiedosto ajamalla samassa hakemistossa terminaalissa (komennolla <code>$ python3 seed.py</code>) tyhjentää tietokannan päätaulut ja lisää satunnaisesti tuotettua dataa näihin tauluihin.
   - Ajo kestää ainakin minulla yli tunnin tiedoston muuttujien oletuksilla. Säädä muuttujat mieleiseksisi.
   - Ei liity muuten sovelluksen toimintaan.
 
@@ -34,9 +35,11 @@ Asenna flask-kirjasto:
 
 <code>$ pip install flask</code>
 
-Luo tietokannan taulut ja lisää alkutiedot:
+Luo tietokannan taulut;
 
 <code>$ sqlite3 database.db < schema.sql</code>
+
+Ja lisää alkutiedot:
 
 <code>$ sqlite3 database.db < init.sql</code>
 
