@@ -28,5 +28,15 @@
 
 </div>
 
+{% if user[0].cid %}
+    <p>
+        <a href="/user/{{ user[0].uid }}/{{ page - 1 }}">&lt;&lt;</a>
+        Sivu {{ page }}/{{ page_count }}
+        <a href="/user/{{ user[0].uid }}/{{ page + 1 }}">&gt;&gt;</a>
+    </p>
+    <hr />
+{% endif %}
+
+
 {% endblock %}
 

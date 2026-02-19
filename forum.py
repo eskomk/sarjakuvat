@@ -98,7 +98,16 @@ def get_comic_count():
     sql = "SELECT COUNT(*) cnt FROM comics"
     return db.query(sql)[0]
 
+def get_user_count():
+    sql = "SELECT COUNT(*) cnt FROM users"
+    return db.query(sql)[0]
+
 def get_comic_star_count(comic_id: int):
     sql = """SELECT COUNT(*) cnt FROM comic_stars
         WHERE comic_id = ?"""
     return db.query(sql, [comic_id])[0][0]
+
+def get_comic_count_per_user(user_id: int):
+    sql = "SELECT COUNT(*) cnt FROM comics WHERE user_id = ?"
+    return db.query(sql, [user_id])[0]
+

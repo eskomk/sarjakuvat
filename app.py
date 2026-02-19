@@ -169,10 +169,29 @@ def create_comic():
         return redirect("/")
 
 @app.route("/user/<int:user_id>")
-def show_user(user_id):
-    user = users.get_user(user_id)
+@app.route("/user/<int:user_id>/<int:page>")
+def show_user(user_id, page=1):
+    if page < 1:
+        page = 1
 
-    return render_template("user.html", user = user)
+    page_size = 10
+    limit = page_size
+    offset = page_size * (page - 1)
+
+    comic_count = forum.get_comic_count_per_user(user_id)
+    page_count = math.ceil(comic_count[0] / page_size)
+    page_count = max(page_count, 1)
+
+    if page < 1:
+        return redirect("/user/" + str(user_id) + "/1")
+    if page > page_count:
+        return redirect("/user/" + str(user_id) + "/" + str(page_count))
+
+    # comiclist = forum.get_comics_per_user(user_id, limit, offset)
+
+    user = users.get_user(user_id, limit, offset)
+
+    return render_template("user.html", user = user, page=page, page_count = page_count)
 
 @app.route("/userlist")
 def list_users():
@@ -183,14 +202,47 @@ def list_users():
 @app.route("/userlist_paged")
 @app.route("/userlist_paged/<int:page>")
 def list_users_paged(page=1):
+    if page < 1:
+        page = 1
 
     page_size = 1
     limit = page_size
     offset = page_size * (page - 1)
 
+    user_count = forum.get_user_count()
+    page_count = math.ceil(user_count[0] / page_size)
+    page_count = max(page_count, 1)
+
+    if page < 1:
+        return redirect("/userlist_paged/1")
+    if page > page_count:
+        return redirect("/userlist_paged/" + str(page_count))
+
     userlist = users.get_users2_paged(limit, offset)
     comics_plain_a = forum.get_plain_comics()
-    return render_template("users.html", userlist = userlist, comics_plain = comics_plain_a, page=page)
+    return render_template("users.html", userlist = userlist, comics_plain = comics_plain_a, page=page, page_count=page_count)
+
+@app.route("/true_userlist_paged")
+@app.route("/true_userlist_paged/<int:page>")
+def true_userlist_paged(page=1):
+    if page < 1:
+        page = 1
+
+    page_size = 10
+    limit = page_size
+    offset = page_size * (page - 1)
+
+    user_count = forum.get_user_count()
+    page_count = math.ceil(user_count[0] / page_size)
+    page_count = max(page_count, 1)
+
+    if page < 1:
+        return redirect("/true_userlist_paged/1")
+    if page > page_count:
+        return redirect("/true_userlist_paged/" + str(page_count))
+
+    userlist = users.get_users2_paged(limit, offset)
+    return render_template("users_wo_comics.html", userlist = userlist, page=page, page_count = page_count)
 
 
 @app.route("/edit_comic/<int:comic_id>", methods=["GET", "POST"])

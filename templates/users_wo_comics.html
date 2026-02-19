@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+{% block title %}Sarjakuvat{% endblock %}
+
+{% block content %}
+<h2>Käyttäjälista</h2>
+
+<div>
+    <ul>
+    {% for u_user in userlist %}
+        <li>
+            <a href="/user/{{ u_user.uid }}">{{ u_user.uname }}</a>
+        </li>
+    {% endfor %}
+    </ul>
+</div>
+
+<p>
+    <a href="/true_userlist_paged/{{ page - 1 }}">&lt;&lt;</a>
+    Sivu {{ page }}/{{ page_count }}
+    <a href="/true_userlist_paged/{{ page + 1 }}">&gt;&gt;</a>
+</p>
+<hr />
+
+{% endblock %}
