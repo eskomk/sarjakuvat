@@ -7,6 +7,10 @@
 
 <div>
     Käyttäjä: {{ user[0].uname }}
+    <p/>
+    Käyttäjän sarjiksien lukumäärä: {{ comic_count }}
+    <p/>
+    Käyttäjän sarjiksien saamien tähtien keskiarvo: {{ mean_stars_user.s_mean }}
 </div>
 <div>
     {% if user[0].cid %}

@@ -39,7 +39,11 @@ def get_comic(id: int):
         LEFT JOIN users u ON c.user_id = u.id
         LEFT JOIN comic_types ct ON c.type_id = ct.id
         WHERE c.id = ?"""
-    return db.query(sql, [id])[0]
+    try:
+        return db.query(sql, [id])[0]
+    except IndexError:
+        return None
+
 
 def get_comic_star_for_user(user_id: int, comic_id: int):
     sql = """SELECT s.user_id user_id, s.comic_id comic_id,
@@ -89,6 +93,17 @@ def get_mean_stars_for_comic(comic_id: int):
         return db.query(sql, [comic_id])[0]
     except IndexError:
         return None
+
+def get_mean_stars_per_user(user_id: int):
+    sql = """SELECT ROUND(AVG(s.stars), 2) as s_mean FROM
+        comic_stars s, comics c
+        WHERE c.user_id = ?
+        AND c.id = s.comic_id"""
+    try:
+        return db.query(sql, [user_id])[0]
+    except IndexError:
+        return None
+
 
 def get_all_comic_types():
     sql = "SELECT id, comic_type FROM comic_types";

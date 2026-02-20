@@ -9,7 +9,7 @@
     <hr/>
     {{ comic.title }}
      <hr/>
-    {{ comic.desc }}
+    <textarea rows="10" cols="100" disabled>{{ comic.desc }}</textarea>
     <hr/>
     {% if user_id == comic.adder_id %}
         Voit muokata sarjista tai poistaa sen.
@@ -35,7 +35,10 @@
     <div>
         {% for star_item in starrings %}
         <div>
-            {{ star_item.stars }} / {{ star_item.s_desc }}
+            {{ star_item.stars }} <br/>
+            <div>
+                <textarea rows="5" cols="100" disabled>{{ star_item.s_desc }}</textarea>
+            </div>
         </div>
         {% endfor %}
     </div>

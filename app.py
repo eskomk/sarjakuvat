@@ -116,6 +116,11 @@ def show_comic(comic_id, page=1):
         return redirect("/login")
 
     comic_a = forum.get_comic(comic_id)
+
+    if comic_a == None:
+        flash("VIRHE: Ei löydy sarjista")
+        return redirect("/")
+
     # stars_per_comic_a = forum.get_stars_per_comic_paged(comic_id)
     mean_stars_a = forum.get_mean_stars_for_comic(comic_id)
 
@@ -174,6 +179,7 @@ def show_user(user_id, page=1):
     if page < 1:
         page = 1
 
+    mean_stars_user_a = forum.get_mean_stars_per_user(user_id)
     page_size = 10
     limit = page_size
     offset = page_size * (page - 1)
@@ -191,7 +197,12 @@ def show_user(user_id, page=1):
 
     user = users.get_user(user_id, limit, offset)
 
-    return render_template("user.html", user = user, page=page, page_count = page_count)
+    if user == None:
+        flash("VIRHE: Käyttäjää ei löydy")
+        return redirect("/")
+
+    return render_template("user.html", user = user, page=page, page_count=page_count, \
+        comic_count=comic_count[0], mean_stars_user=mean_stars_user_a)
 
 @app.route("/userlist")
 def list_users():
@@ -319,6 +330,10 @@ def find():
 @app.route("/star_comic/<int:comic_id>", methods=["GET", "POST"])
 def star_comic(comic_id: int):
     comic_a = forum.get_comic(comic_id)
+
+    if comic_a == None:
+        flash("VIRHE! Sarjista ei löydy")
+        return redirect("/")
 
     if session["user_id"] == comic_a["adder_id"]:
         # abort(403)
