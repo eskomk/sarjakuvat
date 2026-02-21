@@ -126,3 +126,13 @@ def get_comic_count_per_user(user_id: int):
     sql = "SELECT COUNT(*) cnt FROM comics WHERE user_id = ?"
     return db.query(sql, [user_id])[0]
 
+def get_comic_star_count_per_user(user_id: int):
+    sql = "SELECT COUNT(*) cnt FROM comic_stars WHERE user_id = ?"
+    return db.query(sql, [user_id])[0]
+
+def update_thing(sql, params=[]):
+    # sql = "UPDATE comics SET title = ?, description = ?, type_id = ? WHERE id = ?"
+    db.execute(sql, params)
+
+def do_query(sql, params=[]):
+    return db.query(sql, params)

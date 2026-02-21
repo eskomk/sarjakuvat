@@ -36,6 +36,8 @@ create table comic_stars (
   foreign key (comic_id) references comics ON DELETE CASCADE
 );
 
+CREATE INDEX idx_comic_stars ON comic_stars (comic_id);
+
 -- Ref: comics.user_id > users.id
 -- Ref: comic_images.comic_id > comics.id
 -- Ref: comic_type.comic_id > comics.id

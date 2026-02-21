@@ -27,6 +27,10 @@ def csrf_protect():
         if not session_token or session_token != form_token:
             abort(403)
 
+def require_login():
+    if "user_id" not in session:
+        abort(403)
+
 @app.route("/")
 @app.route("/<int:page>")
 def index(page=1):
@@ -67,14 +71,16 @@ def create():
 
     try:
         sql = "INSERT INTO users (username, password_hash) VALUES (?, ?)"
-        db.execute(sql, [username, password_hash])
+        # db.execute(sql, [username, password_hash])
+        forum.update_thing(sql, [username, password_hash])
         last_id = db.last_insert_id()
 
         if last_id:
             session["user_id"] = last_id
             session["username"] = username
     except sqlite3.IntegrityError:
-        return "VIRHE: tunnus on jo varattu"
+        flash("VIRHE: tunnus on jo varattu")
+        return redirect("/")
 
     flash("Tunnus luotu")
     return redirect("/")
@@ -107,6 +113,7 @@ def logout():
 @app.route("/comic_issue/<int:comic_id>")
 @app.route("/comic_issue/<int:comic_id>/<int:page>")
 def show_comic(comic_id, page=1):
+    # require_login()
     username = ""
 
     try:
@@ -132,11 +139,9 @@ def show_comic(comic_id, page=1):
     stars_per_comic_a = forum.get_stars_per_comic_paged(comic_id, page, page_size)
 
     if page < 1:
-        # return redirect("/1")
         return redirect(f"/comic_issue/{comic_id}/1")
 
     if page > page_count:
-        # return redirect("/" + str(page_count))
         return redirect(f"/comic_issue/{comic_id}/{str(page_count)}")
 
     return render_template("comic.html", comic=comic_a, starrings=stars_per_comic_a, \
@@ -164,10 +169,10 @@ def create_comic():
         sql = "INSERT INTO comics (title, description, user_id, type_id) VALUES (?, ?, ?, ?)"
 
         try:
-            db.execute(sql, [title, descr, user_id, comic_type])
+            # db.execute(sql, [title, descr, user_id, comic_type])
+            forum.update_thing(sql, [title, descr, user_id, comic_type])
         except sqlite3.IntegrityError:
             flash("VIRHE: Titteli on jo varattu")
-            # return redirect("/add_comic")
             return render_template("new_comic.html", c_types=comic_types_a)
 
         flash(f"Sarjis '{title}' luotu")
@@ -180,6 +185,8 @@ def show_user(user_id, page=1):
         page = 1
 
     mean_stars_user_a = forum.get_mean_stars_per_user(user_id)
+    review_count_a = forum.get_comic_star_count_per_user(user_id)
+
     page_size = 10
     limit = page_size
     offset = page_size * (page - 1)
@@ -193,16 +200,15 @@ def show_user(user_id, page=1):
     if page > page_count:
         return redirect("/user/" + str(user_id) + "/" + str(page_count))
 
-    # comiclist = forum.get_comics_per_user(user_id, limit, offset)
-
     user = users.get_user(user_id, limit, offset)
 
     if user == None:
         flash("VIRHE: Käyttäjää ei löydy")
         return redirect("/")
 
-    return render_template("user.html", user = user, page=page, page_count=page_count, \
-        comic_count=comic_count[0], mean_stars_user=mean_stars_user_a)
+    return render_template("user.html", user = user, page=page, \
+        page_count=page_count, comic_count=comic_count[0], \
+        mean_stars_user=mean_stars_user_a, review_count=review_count_a[0])
 
 @app.route("/userlist")
 def list_users():
@@ -258,11 +264,19 @@ def true_userlist_paged(page=1):
 
 @app.route("/edit_comic/<int:comic_id>", methods=["GET", "POST"])
 def edit_comic(comic_id):
+    require_login();
+
     comic_a = forum.get_comic(comic_id)
+
+    if comic_a == None:
+        flash("VIRHE: Ei löydy sarjista")
+        return redirect("/")
+
     comic_types_a = forum.get_all_comic_types()
 
     if session["user_id"] != comic_a["adder_id"]:
-        abort(403)
+        flash("VIRHE: Sinulla ei ollut oikeuksia muokata sarjista")
+        return redirect("/")
 
     if request.method == "GET":
         return render_template("edit_comic.html", comic=comic_a, c_types=comic_types_a)
@@ -277,14 +291,13 @@ def edit_comic(comic_id):
             flash("VIRHE: Epätäydelliset tiedot")
             return render_template("edit_comic.html", comic=comic_a, c_types=comic_types_a)
 
-        # user_id = session["user_id"]
         sql = "UPDATE comics SET title = ?, description = ?, type_id = ? WHERE id = ?"
 
         try:
-            db.execute(sql, [title, descr, comic_type, comic_id])
+            # db.execute(sql, [title, descr, comic_type, comic_id])
+            forum.update_thing(sql, [title, descr, comic_type, comic_id])
         except sqlite3.IntegrityError:
             flash("VIRHE: Titteli on jo varattu tai muu virhe")
-            # return redirect("/add_comic")
             return render_template("edit_comic.html", comic=comic_a, c_types=comic_types_a)
 
         flash(f"Sarjista '{title}' muokattu")
@@ -292,7 +305,13 @@ def edit_comic(comic_id):
 
 @app.route("/delete_comic/<int:comic_id>", methods=["GET", "POST"])
 def delete_comic(comic_id):
+    require_login()
+
     comic_a = forum.get_comic(comic_id)
+
+    if comic_a == None:
+        flash("VIRHE: Ei löydy sarjista")
+        return redirect("/")
 
     if session["user_id"] != comic_a["adder_id"]:
         abort(403)
@@ -304,7 +323,8 @@ def delete_comic(comic_id):
         sql = "DELETE FROM comics WHERE id = ?"
 
         try:
-            db.execute(sql, [comic_id])
+            # db.execute(sql, [comic_id])
+            forum.update_thing(sql, [comic_id])
         except sqlite3.IntegrityError:
             flash("VIRHE: Sarjista ei voitu poistaa")
             return render_template("edit_comic.html")
@@ -321,7 +341,8 @@ def find():
 
     if query:
         like = "%" + query + "%"
-        results = db.query(sql, [like, like])
+        # results = db.query(sql, [like, like])
+        results = forum.do_query(sql, [like, like])
     else:
         query = ""
         results = []
@@ -329,6 +350,7 @@ def find():
 
 @app.route("/star_comic/<int:comic_id>", methods=["GET", "POST"])
 def star_comic(comic_id: int):
+    require_login()
     comic_a = forum.get_comic(comic_id)
 
     if comic_a == None:
@@ -366,7 +388,8 @@ def star_comic(comic_id: int):
             str_db_oper = "päivitetty"
 
         try:
-            db.execute(sql, [stars, descr, user_id, comic_id])
+            # db.execute(sql, [stars, descr, user_id, comic_id])
+            forum.update_thing(sql, [stars, descr, user_id, comic_id])
         except sqlite3.IntegrityError:
             flash("VIRHE: Arvostelu ei onnannu, tietokantavirhe")
             return redirect("/")
