@@ -5,13 +5,13 @@
 {% block content %}
 <h2>Luo uusi sarjis</h2>
 <form action="/add_comic" method="POST">
-    Sarjiksen nimi: <br />
-    <input type="text" name="title" maxlength="100" required />
+    <label for="id_title">Sarjiksen nimi</label>: <br />
+    <input type="text" name="title" id="id_title" maxlength="100" required />
     <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
     </p>
     <p>
-    Sarjiksen kuvaus: <br />
-    <textarea name="description" cols="50" rows="20" maxlength="500" required></textarea>
+    <label for="id_descr">Sarjiksen kuvaus</label>: <br />
+    <textarea name="description" id="id_descr" cols="50" rows="20" maxlength="500" required></textarea>
     </p>
     <p>
         <label>Sarjiksen ilmiasu:

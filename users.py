@@ -17,6 +17,7 @@ def get_user(user_id, limit, offset):
              FROM users u
              LEFT JOIN comics c ON u.id = c.user_id
              WHERE u.id = ?
+             ORDER BY title
              LIMIT ? OFFSET ?"""
     result = db.query(sql, [user_id, limit, offset])
     return result if result else None

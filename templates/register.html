@@ -7,17 +7,17 @@
 
 <form action="/create_user" method="post">
   <p>
-    Tunnus: <br />
-    <input type="text" name="username" maxlength="12" required />
+    <label for="id_name">Tunnus</label>: <br />
+    <input type="text" name="username" id="id_name" maxlength="12" required />
     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
   </p>
   <p>
-    Salasana: <br />
-    <input type="password" name="password1" maxlength="12" required/>
+    <label for="id_pass1">Salasana</label>: <br />
+    <input type="password" name="password1" id="id_pass1" maxlength="12" required/>
   </p>
   <p>
-    Salasana uudestaan: <br />
-    <input type="password" name="password2" />
+    <label for="id_pass2">Salasana uudestaan</label>: <br />
+    <input type="password" name="password2" id="id_pass2" />
   </p>
   <input type="submit" value="Luo tunnus" />
 </form>

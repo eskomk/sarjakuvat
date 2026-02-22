@@ -7,7 +7,7 @@
     <h2>Arvostele sarjis</h2>
     <form action="/star_comic/{{ comic.cid }}" method="POST">
         Sarjiksen nimi: <br />
-        <label name="title">{{ comic.title }}</label>
+        <label name="title" id="id_title">{{ comic.title }}</label>
         <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
         </p>
 
@@ -21,10 +21,9 @@
             </select>
         </label>
 
-
         <p>
-        Sanallinen arvostelu: <br />
-        <textarea name="description" cols="50" rows="20" maxlength="500" >{{ starring.desc }}</textarea>
+        <label for="id_desc">Sanallinen arvostelu</label>: <br />
+        <textarea name="description" id="id_descr" cols="50" rows="20" maxlength="500" >{{ starring.desc }}</textarea>
         </p>
         <input type="submit" value="Arvostele sarjis" />
     </form>
