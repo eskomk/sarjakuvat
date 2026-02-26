@@ -17,11 +17,7 @@
 
 ## TODO
 - TODO: Käyttäjä pystyy lisäämään kuvia kuvaukseen sarjakuvasta.
-- TODO: Sovelluksessa on käyttäjäsivut, jotka näyttävät tilastoja ja käyttäjän lisäämät sarjakuvat.
-  - Tämä osittain olemassa.
 - TODO: Etsintätoiminnon tulosten sivutus.
-- TODO: Järkevämpi toiminto users.html -sivulla käyttäjän lisäämien sarjakuvien läpikäyntiin. Liittyy routeen userlist_paged.
-- TODO: Tyylitiedostojen käyttö, kunhan olen päättänyt pitääkö sovelluksen ulkonäköä miten viilata.
 
 ## Sovelluksen asennus
 
