@@ -31,7 +31,7 @@ def get_plain_comics():
         FROM comics c"""
     return db.query(sql)
 
-def get_comic(id: int):
+def get_comic(c_id: int):
     sql = """SELECT c.id cid, c.title title, c.description desc, c.user_id adder_id,
         u.username adder,
         ct.id ctid, ct.comic_type c_type
@@ -40,7 +40,7 @@ def get_comic(id: int):
         LEFT JOIN comic_types ct ON c.type_id = ct.id
         WHERE c.id = ?"""
     try:
-        return db.query(sql, [id])[0]
+        return db.query(sql, [c_id])[0]
     except IndexError:
         return None
 
@@ -106,7 +106,7 @@ def get_mean_stars_per_user(user_id: int):
 
 
 def get_all_comic_types():
-    sql = "SELECT id, comic_type FROM comic_types";
+    sql = "SELECT id, comic_type FROM comic_types"
     return db.query(sql)
 
 def get_comic_count():

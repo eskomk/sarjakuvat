@@ -1,14 +1,14 @@
+import secrets
+import math
 import sqlite3
 from flask import Flask
 from flask import redirect, render_template, request, flash
 from flask import session
 from flask import abort
 from werkzeug.security import generate_password_hash
-from werkzeug.security import check_password_hash
+# from werkzeug.security import check_password_hash
 import db
 import forum, users, config
-import secrets
-import math
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
@@ -99,9 +99,9 @@ def login():
             session["user_id"] = user_id
             session["username"] = username
             return redirect("/")
-        else:
-            flash("VIRHE: väärä tunnus tai salasana")
-            return redirect("/login")
+
+        flash("VIRHE: väärä tunnus tai salasana")
+        return redirect("/login")
 
 
 @app.route("/logout")
@@ -124,11 +124,10 @@ def show_comic(comic_id, page=1):
 
     comic_a = forum.get_comic(comic_id)
 
-    if comic_a == None:
+    if comic_a is None:
         flash("VIRHE: Ei löydy sarjista")
         return redirect("/")
 
-    # stars_per_comic_a = forum.get_stars_per_comic_paged(comic_id)
     mean_stars_a = forum.get_mean_stars_for_comic(comic_id)
 
     page_size = 10
@@ -202,7 +201,7 @@ def show_user(user_id, page=1):
 
     user = users.get_user(user_id, limit, offset)
 
-    if user == None:
+    if user is None:
         flash("VIRHE: Käyttäjää ei löydy")
         return redirect("/")
 
@@ -270,7 +269,7 @@ def edit_comic(comic_id):
 
     comic_a = forum.get_comic(comic_id)
 
-    if comic_a == None:
+    if comic_a is None:
         flash("VIRHE: Ei löydy sarjista")
         return redirect("/")
 
@@ -311,7 +310,7 @@ def delete_comic(comic_id):
 
     comic_a = forum.get_comic(comic_id)
 
-    if comic_a == None:
+    if comic_a is None:
         flash("VIRHE: Ei löydy sarjista")
         return redirect("/")
 
@@ -355,7 +354,7 @@ def star_comic(comic_id: int):
     require_login()
     comic_a = forum.get_comic(comic_id)
 
-    if comic_a == None:
+    if comic_a is None:
         flash("VIRHE! Sarjista ei löydy")
         return redirect("/")
 
