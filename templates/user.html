@@ -5,13 +5,10 @@
 {% block content %}
 <h2>Käyttäjän tiedot</h2>
 
-<div>
-    Käyttäjä: {{ user[0].uname }}
-    <p/>
-    Käyttäjän sarjiksien lukumäärä: {{ comic_count }}
-    <p/>
-    Käyttäjän sarjiksien saamien tähtien keskiarvo: {{ mean_stars_user.s_mean }}
-    <p/>
+<div class="stats">
+    Käyttäjä: {{ user[0].uname }} <br/>
+    Käyttäjän sarjiksien lukumäärä: {{ comic_count }} <br/>
+    Käyttäjän sarjiksien saamien tähtien keskiarvo: {{ mean_stars_user.s_mean }} <br/>
     Käyttäjän arvioimien sarjiksien lukumäärä: {{ review_count }}
 </div>
 <div>

@@ -8,8 +8,10 @@
     Lisääjä: <a href="/user/{{ comic.adder_id }}">{{ comic.adder }}</a>
     <hr/>
     {{ comic.title }}
-     <hr/>
+    <hr/>
     <textarea rows="10" cols="100" disabled>{{ comic.desc }}</textarea>
+    <hr/>
+    Ilmiasu: {{ comic.c_type }}
     <hr/>
     {% if user_id == comic.adder_id %}
         Voit muokata sarjista tai poistaa sen.
@@ -26,9 +28,7 @@
         </div>
     {% endif %}
     <hr/>
-    Ilmiasu: {{ comic.c_type }}
-    <hr/>
-    Arvostelut
+    <h2>Arvostelut</h2>
     <div>
         Keskiarvo: {{ mean_stars.s_mean }}
     </div>

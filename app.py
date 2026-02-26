@@ -237,7 +237,8 @@ def list_users_paged(page=1):
 
     userlist = users.get_users2_paged(limit, offset)
     comics_plain_a = forum.get_plain_comics()
-    return render_template("users.html", userlist = userlist, comics_plain = comics_plain_a, page=page, page_count=page_count)
+    return render_template("users.html", userlist = userlist, \
+        comics_plain = comics_plain_a, page = page, page_count = page_count)
 
 @app.route("/true_userlist_paged")
 @app.route("/true_userlist_paged/<int:page>")
@@ -259,12 +260,13 @@ def true_userlist_paged(page=1):
         return redirect("/true_userlist_paged/" + str(page_count))
 
     userlist = users.get_users2_paged(limit, offset)
-    return render_template("users_wo_comics.html", userlist = userlist, page=page, page_count = page_count)
+    return render_template("users_wo_comics.html", userlist = userlist, \
+        page = page, page_count = page_count)
 
 
 @app.route("/edit_comic/<int:comic_id>", methods=["GET", "POST"])
 def edit_comic(comic_id):
-    require_login();
+    require_login()
 
     comic_a = forum.get_comic(comic_id)
 
@@ -301,7 +303,7 @@ def edit_comic(comic_id):
             return render_template("edit_comic.html", comic=comic_a, c_types=comic_types_a)
 
         flash(f"Sarjista '{title}' muokattu")
-        return redirect("/")
+        return redirect(f"/comic_issue/{comic_id}")
 
 @app.route("/delete_comic/<int:comic_id>", methods=["GET", "POST"])
 def delete_comic(comic_id):
